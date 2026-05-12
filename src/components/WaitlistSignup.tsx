@@ -1,7 +1,7 @@
 import { type FormEvent, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { captureEvent } from '../lib/analytics'
-import { getSupabaseBrowserClient } from '../lib/supabase'
+import { getSupabaseBrowserClient, getSupabaseConfigHint } from '../lib/supabase'
 import { GlowOrb } from './ui/GlowOrb'
 import { PrimaryButton } from './ui/PrimaryButton'
 
@@ -77,9 +77,7 @@ export function WaitlistSignup() {
     const client = getSupabaseBrowserClient()
     if (!client) {
       setFeedback('error')
-      setDevErrorText(
-        import.meta.env.DEV ? 'Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY (restart dev server after .env.local).' : null,
-      )
+      setDevErrorText(import.meta.env.DEV ? getSupabaseConfigHint() : null)
       captureEvent('waitlist_signup_error', { reason: 'config', source: source ?? undefined })
       return
     }
